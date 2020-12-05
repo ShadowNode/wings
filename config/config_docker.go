@@ -45,6 +45,9 @@ type DockerConfiguration struct {
 	// for containers run through the daemon.
 	Network DockerNetworkConfiguration `json:"network" yaml:"network"`
 
+	// Hostname is the Docker hostname for all containers.
+	Hostname string `default:"{id}" json:"hostname" yaml:"hostname"`
+
 	// Domainname is the Docker domainname for all containers.
 	Domainname string `default:"" json:"domainname" yaml:"domainname"`
 

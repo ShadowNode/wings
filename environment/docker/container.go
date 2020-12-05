@@ -165,8 +165,8 @@ func (e *Environment) Create() error {
 	}
 
 	conf := &container.Config{
-		Hostname:     e.Id,
-		Domainname:   config.Get().Docker.Domainname,
+		Hostname:     strings.ReplaceAll(config.Get().Docker.Hostname, "{id}", e.Id),
+		Domainname:   strings.ReplaceAll(config.Get().Docker.Domainname, "{id}", e.Id),
 		User:         strconv.Itoa(config.Get().System.User.Uid),
 		AttachStdin:  true,
 		AttachStdout: true,
