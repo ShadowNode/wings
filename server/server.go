@@ -173,6 +173,9 @@ func (s *Server) CreateEnvironment() error {
 	if err := s.EnsureDataDirectoryExists(); err != nil {
 		return err
 	}
+	if err := s.EnsureShadowNodeDirectoriesExists(); err != nil {
+		return err
+	}
 
 	return s.Environment.Create()
 }
