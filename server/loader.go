@@ -1,9 +1,14 @@
 package server
 
 import (
-	"emperror.dev/errors"
 	"encoding/json"
 	"fmt"
+	"os"
+	"runtime"
+	"strings"
+	"time"
+
+	"emperror.dev/errors"
 	"github.com/apex/log"
 	"github.com/creasty/defaults"
 	"github.com/gammazero/workerpool"
@@ -12,10 +17,6 @@ import (
 	"github.com/pterodactyl/wings/environment"
 	"github.com/pterodactyl/wings/environment/docker"
 	"github.com/pterodactyl/wings/server/filesystem"
-	"os"
-	"path/filepath"
-	"runtime"
-	"time"
 )
 
 var servers = NewCollection(nil)
@@ -107,7 +108,7 @@ func FromConfiguration(data api.ServerConfigurationResponse) (*Server, error) {
 	s.resources.State.Store(environment.ProcessOfflineState)
 
 	s.Archiver = Archiver{Server: s}
-	s.fs = filesystem.New(filepath.Join(config.Get().System.Data, s.Id()), s.DiskSpace())
+	s.fs = filesystem.New(strings.ReplaceAll(config.Get().System.ServerData, "{uuid}", s.Id()), s.DiskSpace())
 
 	// Right now we only support a Docker based environment, so I'm going to hard code
 	// this logic in. When we're ready to support other environment we'll need to make

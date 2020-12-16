@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/pterodactyl/wings/environment"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -15,6 +14,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/pterodactyl/wings/environment"
 
 	"github.com/AlecAivazis/survey/v2"
 	"github.com/AlecAivazis/survey/v2/terminal"
@@ -115,7 +116,8 @@ func diagnosticsCmdRun(cmd *cobra.Command, args []string) {
 		fmt.Fprintln(output, "")
 		fmt.Fprintln(output, "     Root Directory:", cfg.System.RootDirectory)
 		fmt.Fprintln(output, "     Logs Directory:", cfg.System.LogDirectory)
-		fmt.Fprintln(output, "     Data Directory:", cfg.System.Data)
+		fmt.Fprintln(output, " Srv Data Directory:", cfg.System.ServerData)
+		fmt.Fprintln(output, "Sftp Data Directory:", cfg.System.SftpData)
 		fmt.Fprintln(output, "  Archive Directory:", cfg.System.ArchiveDirectory)
 		fmt.Fprintln(output, "   Backup Directory:", cfg.System.BackupDirectory)
 		fmt.Fprintln(output, "")

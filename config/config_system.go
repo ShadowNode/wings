@@ -2,9 +2,7 @@ package config
 
 import (
 	"context"
-	"emperror.dev/errors"
 	"fmt"
-	"github.com/apex/log"
 	"html/template"
 	"io/ioutil"
 	"os"
@@ -13,6 +11,9 @@ import (
 	"path/filepath"
 	"regexp"
 	"time"
+
+	"emperror.dev/errors"
+	"github.com/apex/log"
 )
 
 // Defines basic system configuration settings.
@@ -24,7 +25,10 @@ type SystemConfiguration struct {
 	LogDirectory string `default:"/var/log/pterodactyl" yaml:"log_directory"`
 
 	// Directory where the server data is stored at.
-	Data string `default:"/var/lib/pterodactyl/volumes" yaml:"data"`
+	ServerData string `default:"/var/lib/pterodactyl/volumes/{uuid}" yaml:"server-data"`
+
+	// Directory where the server sftp data is stored at.
+	SftpData string `default:"/var/lib/pterodactyl/volumes/{uuid}" yaml:"sftp-data"`
 
 	// Directory where server archives for transferring will be stored.
 	ArchiveDirectory string `default:"/var/lib/pterodactyl/archives" yaml:"archive_directory"`
@@ -119,16 +123,21 @@ func (sc *SystemConfiguration) ConfigureDirectories() error {
 	// For the sake of automating away as much of this as possible, see if the data directory is a
 	// symlink, and if so resolve to its final real path, and then update the configuration to use
 	// that.
-	if d, err := filepath.EvalSymlinks(sc.Data); err != nil {
+	if d, err := filepath.EvalSymlinks(sc.ServerData); err != nil {
 		if !os.IsNotExist(err) {
 			return err
 		}
-	} else if d != sc.Data {
-		sc.Data = d
+	} else if d != sc.ServerData {
+		sc.ServerData = d
 	}
 
-	log.WithField("path", sc.Data).Debug("ensuring server data directory exists")
-	if err := os.MkdirAll(sc.Data, 0700); err != nil {
+	log.WithField("path", sc.ServerData).Debug("ensuring server data directory exists")
+	if err := os.MkdirAll(sc.ServerData, 0700); err != nil {
+		return err
+	}
+
+	log.WithField("path", sc.SftpData).Debug("ensuring server sftp data directory exists")
+	if err := os.MkdirAll(sc.SftpData, 0700); err != nil {
 		return err
 	}
 

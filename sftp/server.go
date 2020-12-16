@@ -6,11 +6,6 @@ import (
 	"crypto/x509"
 	"encoding/pem"
 	"fmt"
-	"github.com/apex/log"
-	"github.com/patrickmn/go-cache"
-	"github.com/pkg/sftp"
-	"github.com/pterodactyl/wings/api"
-	"golang.org/x/crypto/ssh"
 	"io"
 	"io/ioutil"
 	"net"
@@ -18,6 +13,12 @@ import (
 	"path"
 	"strings"
 	"time"
+
+	"github.com/apex/log"
+	"github.com/patrickmn/go-cache"
+	"github.com/pkg/sftp"
+	"github.com/pterodactyl/wings/api"
+	"golang.org/x/crypto/ssh"
 )
 
 type Settings struct {
@@ -193,6 +194,7 @@ func (c Server) createHandler(sc *ssh.ServerConn) sftp.Handlers {
 		User:          c.User,
 		HasDiskSpace:  c.DiskSpaceValidator,
 		PathValidator: c.PathValidator,
+		Root:          strings.ReplaceAll(c.Settings.BasePath, "{uuid}", sc.Permissions.Extensions["uuid"]),
 		logger: log.WithFields(log.Fields{
 			"subsystem": "sftp",
 			"username":  sc.User(),

@@ -17,7 +17,7 @@ func Initialize(config config.SystemConfiguration) error {
 			Gid: config.User.Gid,
 		},
 		Settings: Settings{
-			BasePath:    config.Data,
+			BasePath:    config.SftpData,
 			ReadOnly:    config.Sftp.ReadOnly,
 			BindAddress: config.Sftp.Address,
 			BindPort:    config.Sftp.Port,
@@ -51,7 +51,7 @@ func validatePath(fs FileSystem, p string) (string, error) {
 		return "", noMatchingServerError
 	}
 
-	return s.Filesystem().SafePath(p)
+	return fs.SafePath(p)
 }
 
 func validateDiskSpace(fs FileSystem) bool {
